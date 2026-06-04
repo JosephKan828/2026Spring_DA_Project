@@ -89,8 +89,11 @@ def main(target_layers: tuple[str, ...]) -> None:
                     np.full(params.K*params.J*params.L, std_Z**2 if obs_Z else inf_var)
                 ])
                 
+                epsilon = np.max(np.diag(all_BEC)) * 1e-4
+                BEC_reg = all_BEC + (np.eye(all_BEC.shape[0]) * epsilon)
+
                 R_mat = np.diag(r_diag)
-                K_dict[(obs_X, obs_Y, obs_Z)] = all_BEC @ np.linalg.inv(all_BEC + R_mat)
+                K_dict[(obs_X, obs_Y, obs_Z)] = BEC_reg @ np.linalg.inv(BEC_reg + R_mat)
 
     # ------------------------------------------------
     # Run Forecast-Analysis Cycle

@@ -37,7 +37,6 @@ def forecast_analysis(
 
     # Current state and conditionally current covariance
     curr_state: l96.L96State = init_state
-    curr_P = np.copy(init_P) if prog_bec else None #type: ignore
     
     total_N = params.K + (params.K * params.J) + (params.K * params.J * params.L)
 
