@@ -109,7 +109,7 @@ def main() -> None:
     data_path: Path = Path("/Users/joseph/Desktop/NTU Course/114-2/Data Assimilation/Project/Files")
 
     # save nature run trajectory
-    np.savez(data_path / "nature_run_trajectory.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
+    np.savez(data_path / "traj" / "nature_run.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
 
     # ------------------------------------------------
     # Visualization
@@ -130,61 +130,61 @@ def main() -> None:
         "figure.constrained_layout.use": True
     })
 
-    # path setup
-    figure_path: Path = Path("/Users/joseph/Desktop/NTU Course/114-2/Data Assimilation/Project/Figure")
+    # # path setup
+    # figure_path: Path = Path("/Users/joseph/Desktop/NTU Course/114-2/Data Assimilation/Project/Figure")
 
-    # Time coordinate for plotting
-    time: np.ndarray = np.arange(0, t_eval, dt)
-    t_display: int = 2000
+    # # Time coordinate for plotting
+    # time: np.ndarray = np.arange(0, t_eval, dt)
+    # t_display: int = 2000
 
-    # Visualize trajectory of X variables
-    fig, axes = plt.subplots(2, 2, figsize=(12, 6))
+    # # Visualize trajectory of X variables
+    # fig, axes = plt.subplots(2, 2, figsize=(12, 6))
 
-    x_ctf = axes[0, 0].contourf(
-        time[:t_display], np.arange(1, params.K + 1),
-        X_traj[:t_display].T, levels=np.linspace(-10, 10, 11),
-        cmap="BrBG", extend="both"
-    )
-    axes[0, 0].set_xlim(0, t_display * dt)
-    axes[0, 0].set_ylim(1, params.K)
-    axes[0, 0].set_ylabel("K")
-    axes[0, 0].set_title("X")
+    # x_ctf = axes[0, 0].contourf(
+    #     time[:t_display], np.arange(1, params.K + 1),
+    #     X_traj[:t_display].T, levels=np.linspace(-10, 10, 11),
+    #     cmap="BrBG", extend="both"
+    # )
+    # axes[0, 0].set_xlim(0, t_display * dt)
+    # axes[0, 0].set_ylim(1, params.K)
+    # axes[0, 0].set_ylabel("K")
+    # axes[0, 0].set_title("X")
 
-    fig.colorbar(x_ctf, ax=axes[0, 0])
+    # fig.colorbar(x_ctf, ax=axes[0, 0])
 
-    # Visualize trajectory of Y variables
-    y_ctf = axes[0, 1].contourf(
-        time[:t_display], np.arange(1, params.K*params.J + 1)/params.J,
-        Y_traj[:t_display].reshape(t_display, params.K*params.J).T,
-        levels=np.linspace(-1, 1, 11), cmap="BrBG", extend="both"
-    )
+    # # Visualize trajectory of Y variables
+    # y_ctf = axes[0, 1].contourf(
+    #     time[:t_display], np.arange(1, params.K*params.J + 1)/params.J,
+    #     Y_traj[:t_display].reshape(t_display, params.K*params.J).T,
+    #     levels=np.linspace(-1, 1, 11), cmap="BrBG", extend="both"
+    # )
 
-    axes[0, 1].set_xlim(0, t_display * dt)
-    axes[0, 1].set_ylim(1, params.K)
-    axes[0, 1].set_title("Y")
+    # axes[0, 1].set_xlim(0, t_display * dt)
+    # axes[0, 1].set_ylim(1, params.K)
+    # axes[0, 1].set_title("Y")
 
-    fig.colorbar(y_ctf, ax=axes[0, 1])
+    # fig.colorbar(y_ctf, ax=axes[0, 1])
 
-    # Visualize trajectory of Z variables
-    z_ctf = axes[1, 0].contourf(
-        time[:t_display], np.arange(1, params.K*params.J*params.L + 1)/(params.J*params.L),
-        Z_traj[:t_display].reshape(t_display, params.K*params.J*params.L).T,
-        levels=np.linspace(-0.1, 0.1, 11), cmap="BrBG", extend="both"
-    )
-    axes[1, 0].set_xlim(0, t_display * dt)
-    axes[1, 0].set_ylim(1, params.K)
-    axes[1, 0].set_xlabel("Time (units)")
-    axes[1, 0].set_ylabel("K*J*L")
-    axes[1, 0].set_title("Z")
+    # # Visualize trajectory of Z variables
+    # z_ctf = axes[1, 0].contourf(
+    #     time[:t_display], np.arange(1, params.K*params.J*params.L + 1)/(params.J*params.L),
+    #     Z_traj[:t_display].reshape(t_display, params.K*params.J*params.L).T,
+    #     levels=np.linspace(-0.1, 0.1, 11), cmap="BrBG", extend="both"
+    # )
+    # axes[1, 0].set_xlim(0, t_display * dt)
+    # axes[1, 0].set_ylim(1, params.K)
+    # axes[1, 0].set_xlabel("Time (units)")
+    # axes[1, 0].set_ylabel("K*J*L")
+    # axes[1, 0].set_title("Z")
 
-    fig.colorbar(z_ctf, ax=axes[1, 0])
+    # fig.colorbar(z_ctf, ax=axes[1, 0])
 
-    axes[1, 1].axis("off")
+    # axes[1, 1].axis("off")
 
-    plt.suptitle("Nature Run Trajectory (First 2000 steps)", fontsize=18)
+    # plt.suptitle("Nature Run Trajectory (First 2000 steps)", fontsize=18)
 
-    plt.savefig(figure_path / "nature_run_trajectory.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    # plt.savefig(figure_path / "nature_run_trajectory.png", dpi=300, bbox_inches="tight")
+    # plt.close(fig)
 
 
 

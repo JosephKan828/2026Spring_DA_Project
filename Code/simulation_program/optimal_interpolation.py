@@ -36,13 +36,12 @@ def main(target_layers: tuple[str, ...]) -> None:
     # ================================================
     # Collect Data
     # ================================================
-    bec_source: str = "climatology" # "climatology" or "NMC"
+    bec_source: str = "NMC" # "climatology" or "NMC"
 
     data_dict: dict[str, dict[str, np.ndarray]] = {
         "init"  : dict(np.load(file_path / "free_run_initial_state.npz")),
-        "nature": dict(np.load(file_path / "nature_run_trajectory.npz")),
+        "nature": dict(np.load(file_path / "traj" / "nature_run.npz")),
         "obs"   : dict(np.load(file_path / "simulated_observations.npz")),
-        # "bec"   : dict(np.load(file_path / "static_BEC.npz"))
         "bec"   : dict(np.load(file_path / f"{bec_source}_BEC.npz"))
     }
 
@@ -125,7 +124,10 @@ def main(target_layers: tuple[str, ...]) -> None:
     # ------------------------------------------------
     prefix = "-".join(target_layers) # e.g., "X-Y-Z" or "X"
 
-    np.savez(file_path / "traj" / f"OI_on_{prefix}_{bec_source}.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
+    os.makedirs(file_path / "traj" / "OI", exist_ok=True)
+    os.makedirs(file_path / "traj" / "OI" / f"{bec_source}", exist_ok=True)
+
+    np.savez(file_path / "traj" / "OI" / f"{bec_source}" / f"on_{prefix}.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
 
 if __name__ == "__main__":
     

@@ -40,11 +40,11 @@ def main(target_layers: tuple[str, ...]):
     # Collect Data
     # ------------------------------------------------
 
-    bec_source: str = "climatology" # "climatology" or "NMC"
+    bec_source: str = "NMC" # "climatology" or "NMC"
 
     data_dict: dict[str, dict[str, np.ndarray]] = {
         "init"  : dict(np.load(file_path / "free_run_initial_state.npz")),
-        "nature": dict(np.load(file_path / "nature_run_trajectory.npz")),
+        "nature": dict(np.load(file_path / "traj" / "nature_run.npz")),
         "obs"   : dict(np.load(file_path / "simulated_observations.npz")),
         "bec"   : dict(np.load(file_path / f"{bec_source}_BEC.npz"))
     }
@@ -137,21 +137,14 @@ def main(target_layers: tuple[str, ...]):
     )
 
     # ------------------------------------------------
-    # Calculate RMSE
-    # ------------------------------------------------
-    X_RMSE = np.sqrt(np.mean((X_traj - data_dict["nature"]["X"])**2, axis=(1,)))
-    Y_RMSE = np.sqrt(np.mean((Y_traj - data_dict["nature"]["Y"])**2, axis=(1, 2)))
-    Z_RMSE = np.sqrt(np.mean((Z_traj - data_dict["nature"]["Z"])**2, axis=(1, 2, 3)))
-
-
-    # ------------------------------------------------
     # Save & Visualize
     # ------------------------------------------------
     prefix = "-".join(target_layers) # e.g., "X-Y-Z" or "X"
     
-    np.savez(file_path / "traj" / f"3DVar_on_{prefix}_{bec_source}.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
-    np.savez(file_path / "rmse" / f"3DVar_on_{prefix}_{bec_source}.npz", X=X_RMSE, Y=Y_RMSE, Z=Z_RMSE)
+    os.makedirs(file_path / "traj" / "3DVar", exist_ok=True)
+    os.makedirs(file_path / "traj" / "3DVar" / f"{bec_source}", exist_ok=True)
 
+    np.savez(file_path / "traj" / "3DVar" / f"{bec_source}" / f"on_{prefix}.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
 
 # ====================================================
 # Execute main function

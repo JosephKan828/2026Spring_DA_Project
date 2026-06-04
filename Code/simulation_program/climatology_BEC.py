@@ -25,8 +25,8 @@ def main() -> None:
     # ------------------------------------------------
     data_path: Path = Path("/Users/joseph/Desktop/NTU Course/114-2/Data Assimilation/Project/Files")
 
-    nature_run = np.load(data_path / "nature_run_trajectory.npz")
-    free_run = np.load(data_path / "free_run_trajectory.npz")
+    nature_run = np.load(data_path / "traj" / "nature_run.npz")
+    free_run = np.load(data_path / "traj" / "free_run.npz")
 
     # ------------------------------------------------
     # Extract the last 3000 time step and calculate BEC
@@ -59,69 +59,6 @@ def main() -> None:
         X=X_BEC, Y=Y_BEC, Z=Z_BEC,
         all=all_BEC
         )
-
-    # ------------------------------------------------    
-    # Visualize error covariance matrix
-    # ------------------------------------------------
-
-    # Figure setting
-    plt.rcParams.update({
-        "font.family": "serif",
-        "mathtext.fontset": "stix",
-        "figure.dpi": 300,
-        "axes.grid": False,
-        "axes.labelsize": 14,
-        "axes.titlesize": 16,
-        "xtick.direction": "in",
-        "ytick.direction": "in",
-        "xtick.labelsize": 12,
-        "ytick.labelsize": 12,
-        "figure.constrained_layout.use": True
-    })
-
-    # figure path
-    fig_path: Path = Path("/Users/joseph/Desktop/NTU Course/114-2/Data Assimilation/Project/Figure")
-
-    fig, axes = plt.subplots(2, 2, figsize=(13, 13))
-
-    X_pcm = axes[0, 0].pcolormesh(
-        np.arange(1, X_BEC.shape[0]+1),
-        np.arange(1, X_BEC.shape[1]+1),
-        X_BEC, cmap="RdBu_r",
-        norm=TwoSlopeNorm(vcenter=0)
-    )
-
-    fig.colorbar(X_pcm, ax=axes[0, 0])
-
-    Y_pcm = axes[0, 1].pcolormesh(
-        np.arange(1, Y_BEC.shape[0]+1),
-        np.arange(1, Y_BEC.shape[1]+1),
-        Y_BEC, cmap="RdBu_r",
-        norm=TwoSlopeNorm(vcenter=0)
-    )
-
-    fig.colorbar(Y_pcm, ax=axes[0, 1])
-
-    Z_pcm = axes[1, 0].pcolormesh(
-        np.arange(1, Z_BEC.shape[0]+1),
-        np.arange(1, Z_BEC.shape[1]+1),
-        Z_BEC, cmap="RdBu_r",
-        norm=TwoSlopeNorm(vcenter=0)
-    )
-
-    fig.colorbar(Z_pcm, ax=axes[1, 0])
-
-    all_pcm = axes[1, 1].pcolormesh(
-        np.arange(1, all_BEC.shape[0]+1),
-        np.arange(1, all_BEC.shape[1]+1),
-        all_BEC, cmap="RdBu_r",
-        norm=TwoSlopeNorm(vcenter=0, vmin=-1, vmax=1)
-    )
-
-    fig.colorbar(all_pcm, ax=axes[1, 1])
-
-    plt.savefig(fig_path / "static_BEC.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
 
 # ====================================================
 # Execute main function

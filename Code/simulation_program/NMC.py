@@ -29,7 +29,7 @@ def main(target_prefix: str = "X-Y-Z"):
     # ------------------------------------------------
     # 1. Load the pre-computed OI Trajectory
     # ------------------------------------------------
-    traj_file = file_path / "traj" / f"OI_on_{target_prefix}_climatology.npz"
+    traj_file = file_path / "traj" / "OI" / "climatology" / f"on_{target_prefix}.npz"
     print(f"Loading analysis states from: {traj_file.name}")
     
     try:

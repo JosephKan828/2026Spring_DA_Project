@@ -91,15 +91,6 @@ def main() -> None:
     print("Free run complete. Saving results...")
 
     # ------------------------------------------------
-    # Calculate RMSE
-    # ------------------------------------------------
-    print("Start calculate RMSE ...")
-
-    X_RMSE: np.ndarray = np.sqrt(np.mean((X_traj - nature_data["X"])**2, axis=(1,)))
-    Y_RMSE: np.ndarray = np.sqrt(np.mean((Y_traj - nature_data["Y"])**2, axis=(1, 2)))
-    Z_RMSE: np.ndarray = np.sqrt(np.mean((Z_traj - nature_data["Z"])**2, axis=(1, 2, 3)))
-
-    # ------------------------------------------------
     # Saving files
     # ------------------------------------------------
 
@@ -110,10 +101,7 @@ def main() -> None:
     np.savez(data_path / "free_run_initial_state.npz", X=X_init, Y=Y_init, Z=Z_init)
 
     # save free run trajectory
-    np.savez(data_path / "free_run_trajectory.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
-
-    # save free run RMSE 
-    np.savez(data_path / "free_run_RMSE.npz", X=X_RMSE, Y=Y_RMSE, Z=Z_RMSE)
+    np.savez(data_path / "traj" / "free_run.npz", X=X_traj, Y=Y_traj, Z=Z_traj)
 
     # ------------------------------------------------
     # Visualization
@@ -134,76 +122,76 @@ def main() -> None:
         "figure.constrained_layout.use": True
     })
 
-    # path setup
-    figure_path: Path = Path("/Users/joseph/Desktop/NTU Course/114-2/Data Assimilation/Project/Figure")
+    # # path setup
+    # figure_path: Path = Path("/Users/joseph/Desktop/NTU Course/114-2/Data Assimilation/Project/Figure")
 
-    # Time coordinate for plotting
-    time: np.ndarray = np.arange(0, t_eval, dt)
-    t_display: int = 2000
+    # # Time coordinate for plotting
+    # time: np.ndarray = np.arange(0, t_eval, dt)
+    # t_display: int = 2000
 
-    # Visualize trajectory of X variables
-    fig, axes = plt.subplots(2, 2, figsize=(12, 6))
+    # # Visualize trajectory of X variables
+    # fig, axes = plt.subplots(2, 2, figsize=(12, 6))
 
-    x_ctf = axes[0, 0].contourf(
-        time[:t_display], np.arange(1, params.K + 1),
-        X_traj[:t_display].T, levels=np.linspace(-10, 10, 11),
-        cmap="BrBG", extend="both"
-    )
-    axes[0, 0].set_xlim(0, t_display * dt)
-    axes[0, 0].set_ylim(1, params.K)
-    axes[0, 0].set_ylabel("K")
-    axes[0, 0].set_title("X")
+    # x_ctf = axes[0, 0].contourf(
+    #     time[:t_display], np.arange(1, params.K + 1),
+    #     X_traj[:t_display].T, levels=np.linspace(-10, 10, 11),
+    #     cmap="BrBG", extend="both"
+    # )
+    # axes[0, 0].set_xlim(0, t_display * dt)
+    # axes[0, 0].set_ylim(1, params.K)
+    # axes[0, 0].set_ylabel("K")
+    # axes[0, 0].set_title("X")
 
-    fig.colorbar(x_ctf, ax=axes[0, 0])
+    # fig.colorbar(x_ctf, ax=axes[0, 0])
 
-    # Visualize trajectory of Y variables
-    y_ctf = axes[0, 1].contourf(
-        time[:t_display], np.arange(1, params.K*params.J + 1)/params.J,
-        Y_traj[:t_display].reshape(t_display, params.K*params.J).T,
-        levels=np.linspace(-1, 1, 11), cmap="BrBG", extend="both"
-    )
+    # # Visualize trajectory of Y variables
+    # y_ctf = axes[0, 1].contourf(
+    #     time[:t_display], np.arange(1, params.K*params.J + 1)/params.J,
+    #     Y_traj[:t_display].reshape(t_display, params.K*params.J).T,
+    #     levels=np.linspace(-1, 1, 11), cmap="BrBG", extend="both"
+    # )
 
-    axes[0, 1].set_xlim(0, t_display * dt)
-    axes[0, 1].set_ylim(1, params.K)
-    axes[0, 1].set_title("Y")
+    # axes[0, 1].set_xlim(0, t_display * dt)
+    # axes[0, 1].set_ylim(1, params.K)
+    # axes[0, 1].set_title("Y")
 
-    fig.colorbar(y_ctf, ax=axes[0, 1])
+    # fig.colorbar(y_ctf, ax=axes[0, 1])
 
-    # Visualize trajectory of Z variables
-    z_ctf = axes[1, 0].contourf(
-        time[:t_display], np.arange(1, params.K*params.J*params.L + 1)/(params.J*params.L),
-        Z_traj[:t_display].reshape(t_display, params.K*params.J*params.L).T,
-        levels=np.linspace(-0.1, 0.1, 11), cmap="BrBG", extend="both"
-    )
-    axes[1, 0].set_xlim(0, t_display * dt)
-    axes[1, 0].set_ylim(1, params.K)
-    axes[1, 0].set_xlabel("Time (units)")
-    axes[1, 0].set_ylabel("K*J*L")
-    axes[1, 0].set_title("Z")
+    # # Visualize trajectory of Z variables
+    # z_ctf = axes[1, 0].contourf(
+    #     time[:t_display], np.arange(1, params.K*params.J*params.L + 1)/(params.J*params.L),
+    #     Z_traj[:t_display].reshape(t_display, params.K*params.J*params.L).T,
+    #     levels=np.linspace(-0.1, 0.1, 11), cmap="BrBG", extend="both"
+    # )
+    # axes[1, 0].set_xlim(0, t_display * dt)
+    # axes[1, 0].set_ylim(1, params.K)
+    # axes[1, 0].set_xlabel("Time (units)")
+    # axes[1, 0].set_ylabel("K*J*L")
+    # axes[1, 0].set_title("Z")
 
-    fig.colorbar(z_ctf, ax=axes[1, 0])
+    # fig.colorbar(z_ctf, ax=axes[1, 0])
 
-    axes[1, 1].axis("off")
+    # axes[1, 1].axis("off")
 
-    plt.suptitle("Free Run Trajectory (First 2000 steps)", fontsize=18)
+    # plt.suptitle("Free Run Trajectory (First 2000 steps)", fontsize=18)
 
-    plt.savefig(figure_path / "free_run_trajectory.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    # plt.savefig(figure_path / "free_run_trajectory.png", dpi=300, bbox_inches="tight")
+    # plt.close(fig)
 
-    # Plot RMSE growth between free run adn nature run
-    fig, ax = plt.subplots(figsize=(6, 4))
+    # # Plot RMSE growth between free run adn nature run
+    # fig, ax = plt.subplots(figsize=(6, 4))
 
-    ax.semilogy(time, X_RMSE, label="X RMSE")
-    ax.semilogy(time, Y_RMSE, label="Y RMSE")
-    ax.semilogy(time, Z_RMSE, label="Z RMSE")
+    # ax.semilogy(time, X_RMSE, label="X RMSE")
+    # ax.semilogy(time, Y_RMSE, label="Y RMSE")
+    # ax.semilogy(time, Z_RMSE, label="Z RMSE")
 
-    ax.set_xlabel("Time (units)")
-    ax.set_ylabel("RMSE")
-    ax.set_title("RMSE Growth")
-    ax.legend()
+    # ax.set_xlabel("Time (units)")
+    # ax.set_ylabel("RMSE")
+    # ax.set_title("RMSE Growth")
+    # ax.legend()
 
-    plt.savefig(figure_path / "free_RMSE_growth.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    # plt.savefig(figure_path / "free_RMSE_growth.png", dpi=300, bbox_inches="tight")
+    # plt.close(fig)
 
 
 
