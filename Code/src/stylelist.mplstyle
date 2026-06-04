@@ -1,0 +1,22 @@
+# Font Settings
+font.family: serif
+mathtext.fontset: stix
+
+# Figure Settings
+figure.dpi: 300
+figure.constrained_layout.use: True
+
+# Axes Settings
+axes.grid: False
+axes.labelsize: 14
+axes.titlesize: 16
+
+# Ticks Settings (Direction and Size)
+xtick.direction: in
+ytick.direction: in
+xtick.labelsize: 12
+ytick.labelsize: 12
+
+# Colorblind-Friendly Color Cycle (Seaborn 'colorblind' Palette)
+# Colors: Blue, Orange, Green, Red, Purple, Brown, Pink, Gray, Yellow, Cyan
+axes.prop_cycle: cycler('color', ['0173b2', 'de8f05', '029e73', 'd55e00', 'cc78bc', 'ca9161', 'fbafe4', '949494', 'ece133', '56b4e9'])
