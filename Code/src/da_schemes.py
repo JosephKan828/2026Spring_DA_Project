@@ -25,7 +25,7 @@ def forecast_analysis(
         params: l96.L96Params,
         dt: float,
         t_eval: float,
-        da_scheme: Callable,
+        da_scheme: Callable
 ):
     # Time configuration
     num_steps = int(t_eval / dt)
@@ -35,8 +35,11 @@ def forecast_analysis(
     Y_traj: np.ndarray = np.zeros((num_steps, params.K, params.J))
     Z_traj: np.ndarray = np.zeros((num_steps, params.K, params.J, params.L))
 
-    # current state
+    # Current state and conditionally current covariance
     curr_state: l96.L96State = init_state
+    curr_P = np.copy(init_P) if prog_bec else None #type: ignore
+    
+    total_N = params.K + (params.K * params.J) + (params.K * params.J * params.L)
 
     offset_Y: int = params.K
     offset_Z: int = params.K + (params.K * params.J)
@@ -56,24 +59,26 @@ def forecast_analysis(
         do_Y = arr_Y and ("Y" in target_layers)
         do_Z = arr_Z and ("Z" in target_layers)
 
+        # Flatten current state for padding and DA schemes
+        state_flat = np.concatenate([
+            curr_state[0].flatten(),
+            curr_state[1].flatten(),
+            curr_state[2].flatten()
+        ])
+
         if do_X or do_Y or do_Z:
             # Zero-Innovation Padding Trick
-            state_flat = np.concatenate([
-                curr_state[0].flatten(),
-                curr_state[1].flatten(),
-                curr_state[2].flatten()
-            ])
             pad_obs = np.copy(state_flat)
-
             if do_X: pad_obs[:offset_Y] = val_X[ptr_x].flatten()
             if do_Y: pad_obs[offset_Y:offset_Z] = val_Y[ptr_y].flatten()
             if do_Z: pad_obs[offset_Z:] = val_Z[ptr_z].flatten()
 
-            # ========================================================
-            # DYNAMIC MATH INJECTION
-            # Calls whichever DA method (OI or 3DVar) was passed in
-            # ========================================================
             flags = (do_X, do_Y, do_Z)
+
+            # ========================================================
+            # ANALYSIS INJECTION
+            # ========================================================
+            
             curr_state = da_scheme(curr_state, pad_obs, flags)
 
         # Advance pointers
@@ -81,14 +86,21 @@ def forecast_analysis(
         if arr_Y: ptr_y += 1
         if arr_Z: ptr_z += 1
 
-        # Store trajectory and integrate forward
+        # Store trajectory
         X_traj[t] = curr_state[0]
         Y_traj[t] = curr_state[1]
         Z_traj[t] = curr_state[2]
 
-        curr_state = integ.rk4_step(
+        # ========================================================
+        # FORECAST INJECTION
+        # ========================================================
+        # A. Advance Non-Linear State (RK4)
+        next_state = integ.rk4_step(
             state=curr_state, params=params, dt=dt, tendency_fn=l96.compute_tendencies
         )
+
+
+        curr_state = next_state
 
     return X_traj, Y_traj, Z_traj
 
